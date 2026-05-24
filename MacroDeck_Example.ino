@@ -35,7 +35,9 @@ Keyboard::Keyboard kb(
 
 // --- Debounce ----------------------------------------------------------------
 unsigned long lastPress[4] = {0, 0, 0, 0};
-const unsigned long DEBOUNCE_MS = 200;
+
+// It is recommended to adjust this to meet your requirements, as this depends heavily on your KBD Switches type.
+const unsigned long DEBOUNCE_MS = 250; // 250 is the amount used for Blue KBD Switches.
 
 // --- Setup -------------------------------------------------------------------
 void setup() {
@@ -43,20 +45,23 @@ void setup() {
   Serial.println("LBLE MacroDeck Example");
 
   for (int i = 0; i < PIN_COUNT; i++) {
-    pinMode(ALL_PINS[i], INPUT_PULLUP);
+    pinMode(ALL_PINS[i], INPUT_PULLUP); // You should setup your pins properly.
+    // Here we simply mark all pins as PULLUP/Digital(1/0).
   }
 
-  kb.begin();
+  kb.begin(); // You should use this to advertise to the Bluetooth driver that you are discoverable/Bluetooth is now enabled.
   Serial.println("BLE advertising — pair MacroDeck V1 from your host.");
 }
 
 // --- Loop --------------------------------------------------------------------
 void loop() {
+  // Check if a client has connected.
   if (!kb.isConnected()) {
     delay(10);
     return;
   }
 
+  // define "now", as we use it later.
   unsigned long now = millis();
 
   // Henkan (Convert)
@@ -91,5 +96,5 @@ void loop() {
     kb.release(Keyboard::Keys::JP_IME_ON);
   }
 
-  delay(10); // let BLE stack breathe
+  delay(10); // let BLE stack breathe for a bit. you can modify this at your heart's content.
 }
